@@ -4,4 +4,5 @@ shieldcharge:
    timelimit: 1
    radius: 1
    delay: 60
+   damage: 0
    
