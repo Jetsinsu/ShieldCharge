@@ -33,6 +33,8 @@ public class ShieldChargeListener implements Listener{
 		Player p = e.getPlayer();
 		if(!p.hasPermission("sc.usage")) return;
 
+		int radius = plugin.getConfig().getInt("shieldcharge.radius");
+		
 		int speed = plugin.getConfig().getInt("shieldcharge.speed");
 		int delay = plugin.getConfig().getInt("shieldcharge.delay");
 		
@@ -40,8 +42,10 @@ public class ShieldChargeListener implements Listener{
 			if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
 				if (e.getItem() == null) return;
 				if (e.getItem().getType().equals(Material.SHIELD)){
+					List<Entity> noEntity = p.getNearbyEntities(radius, radius, radius);
+					if(noEntity.isEmpty()) return;
 					if(delaytime.contains(p.getName())) return;
-					
+						
 					list.add(p.getName());
 					p.setWalkSpeed((float) speed/5);
 					shieldTimeLimit(p);
