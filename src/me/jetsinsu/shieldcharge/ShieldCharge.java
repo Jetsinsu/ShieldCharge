@@ -26,7 +26,7 @@ public class ShieldCharge extends JavaPlugin{
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if(!(sender instanceof Player)){
-			sender.sendMessage(sc + "Command only for players!");
+			sender.sendMessage(sc + "Command only for players! :D");
 			return true;
 		}
 		
