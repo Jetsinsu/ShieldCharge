@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 public class ShieldChargeEvent extends Event implements Cancellable{
-	public static final HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
 	
 	private Player player;
@@ -34,7 +34,7 @@ public class ShieldChargeEvent extends Event implements Cancellable{
 	
 	@Override
 	public HandlerList getHandlers(){
-		return null;
+		return handlers;
 	}
 
 	@Override
