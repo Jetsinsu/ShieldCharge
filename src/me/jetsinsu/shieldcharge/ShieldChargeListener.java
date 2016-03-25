@@ -18,13 +18,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ShieldChargeListener implements Listener{
 	
-	ArrayList<String> list = new ArrayList<String>();
+	private double radius, speed, delay, limit, damage;
+	
+	ArrayList<String> limitTime = new ArrayList<String>();
 	ArrayList<String> delaytime = new ArrayList<String>();
 
-	public ShieldCharge plugin;
-	
+	private ShieldCharge plugin;
 	public ShieldChargeListener(ShieldCharge plugin){
 		this.plugin = plugin;
+		
+		this.radius = plugin.getConfig().getDouble("shieldcharge.radius");
+		this.speed = plugin.getConfig().getDouble("shieldcharge.speed");
+		this.delay = plugin.getConfig().getDouble("shieldcharge.delay");
+		this.limit = plugin.getConfig().getDouble("shieldcharge.timelimit");
+		this.damage = plugin.getConfig().getDouble("shieldcharge.damage");
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
@@ -34,71 +41,53 @@ public class ShieldChargeListener implements Listener{
 		Player p = e.getPlayer();
 		if(!p.hasPermission("sc.usage")) return;
 
-		int radius = plugin.getConfig().getInt("shieldcharge.radius");
-		
-		int speed = plugin.getConfig().getInt("shieldcharge.speed");
-		int delay = plugin.getConfig().getInt("shieldcharge.delay");
-		
-		if(plugin.getConfig().getBoolean("shieldcharge.enable")){
-			if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
-				if (e.getItem() == null) return;
-				if (e.getItem().getType().equals(Material.SHIELD)){
-					List<Entity> noEntity = p.getNearbyEntities(radius, radius, radius);
-					if(noEntity.isEmpty()) return;
-					if(delaytime.contains(p.getName())) return;
-						
-					list.add(p.getName());
-					p.setWalkSpeed((float) speed/5);
-					shieldTimeLimit(p);
-					shieldCharge(p);
-					p.sendMessage(plugin.sc + "Cooldown for " + delay + " seconds");
-				}
+		if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
+			if (e.getItem() == null) return;
+			if (e.getItem().getType().equals(Material.SHIELD)){
+				if(p.getNearbyEntities(radius, radius, radius).isEmpty()) return;
+				if(delaytime.contains(p.getName())) return;
+				
+				shieldCharge(p);
+				shieldTimeLimit(p);
 			}
 		}
 	}
 	
 	public void shieldTimeLimit(final Player p){
-		int timelimit = plugin.getConfig().getInt("shieldcharge.timelimit");
+		p.setWalkSpeed((float) speed/5);
+		limitTime.add(p.getName());
 		new BukkitRunnable(){
 			@Override
 			public void run(){
-				list.remove(p.getName());
+				limitTime.remove(p.getName());
 				p.setWalkSpeed((float) 0.2);
-				delaytime.add(p.getName());
-				delayCoolDown(p);
+				if (delay > 0) delayCoolDown(p);
 			}
-		}.runTaskLater(plugin, timelimit * 20);
+		}.runTaskLater(plugin, ((long) limit * 20));
 	}
 	
 	public void shieldCharge(final Player p){
-		final int radius = plugin.getConfig().getInt("shieldcharge.radius");
-		final int damageamount = plugin.getConfig().getInt("shieldcharge.damage");
-		new BukkitRunnable(){
-			@Override
-			public void run() {
-				if(!list.contains(p.getName())) return;
-				
-				List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
-				for(Entity e: damaged){
-					if(e instanceof LivingEntity){
-						CustomDeathMessage.bashed = true;
-						((Damageable) e).damage(damageamount, p);
-						e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
-						p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 1, 1);
-					}
-				}
+		List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
+		for(Entity e: damaged){
+			if (delaytime.contains(p.getName())) return;
+			if(e instanceof LivingEntity){
+				CustomDeathMessage.bashed = true;
+				((Damageable) e).damage(damage, p);
+				e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
+				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 1, 1);
 			}
-		}.runTaskTimer(plugin, 0L, 20L);
+		}
 	}
 	
 	private void delayCoolDown(final Player p) {
-		int delay = plugin.getConfig().getInt("shieldcharge.delay");
+		delaytime.add(p.getName());
+		p.sendMessage(plugin.sc + "Cooldown for " + delay + " seconds");
 		new BukkitRunnable(){
 			@Override
 			public void run() {
 				delaytime.remove(p.getName());
 				p.sendMessage(plugin.sc + "Cooldown ended");
 			}
-		}.runTaskLater(plugin, delay * 20);
+		}.runTaskLater(plugin, ((long) delay * 20));
 	}
 }
