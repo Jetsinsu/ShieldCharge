@@ -3,6 +3,7 @@ package me.jetsinsu.shieldcharge;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
@@ -14,7 +15,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import me.jetsinsu.shieldcharge.api.ShieldChargeEvent;
 
 public class ShieldChargeListener implements Listener{
 	
@@ -47,7 +51,7 @@ public class ShieldChargeListener implements Listener{
 				if(p.getNearbyEntities(radius, radius, radius).isEmpty()) return;
 				if(delaytime.contains(p.getName())) return;
 				
-				shieldCharge(p);
+				shieldCharge(p, e.getItem());
 				shieldTimeLimit(p);
 			}
 		}
@@ -66,11 +70,15 @@ public class ShieldChargeListener implements Listener{
 		}.runTaskLater(plugin, ((long) limit * 20));
 	}
 	
-	public void shieldCharge(final Player p){
+	public void shieldCharge(final Player p, final ItemStack shield){
 		List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
 		for(Entity e: damaged){
 			if (delaytime.contains(p.getName())) return;
 			if(e instanceof LivingEntity){
+				ShieldChargeEvent event = new ShieldChargeEvent(p, shield, ((LivingEntity) e));
+				Bukkit.getPluginManager().callEvent(event);
+				if (event.isCancelled()) continue;
+				
 				CustomDeathMessage.bashed = true;
 				((Damageable) e).damage(damage, p);
 				e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
