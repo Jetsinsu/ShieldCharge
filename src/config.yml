@@ -1,0 +1,7 @@
+shieldcharge:
+   enable: true
+   speed: 1
+   timelimit: 1
+   radius: 1
+   delay: 60
+   

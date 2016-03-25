@@ -1,0 +1,17 @@
+main: me.jetsinsu.shieldcharge.ShieldCharge
+version: 1
+name: ShieldCharge
+author: Jetsinsu
+
+commands:
+   shieldcharge:
+      usage: /<command> <args>
+      aliases: [sc]
+
+permissions:
+   sc.reload:
+      default: op
+   sc.save:
+      default: op
+   sc.usage:
+      default: true
