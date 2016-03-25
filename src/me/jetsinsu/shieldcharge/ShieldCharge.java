@@ -1,7 +1,7 @@
 package me.jetsinsu.shieldcharge;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +14,8 @@ public class ShieldCharge extends JavaPlugin{
 	
 	public void onEnable(){
 		Bukkit.getServer().getPluginManager().registerEvents(new ShieldChargeListener(this), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new CustomDeathMessage(), this);
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}

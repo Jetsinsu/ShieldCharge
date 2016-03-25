@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -26,7 +27,7 @@ public class ShieldChargeListener implements Listener{
 		this.plugin = plugin;
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onUseShield(PlayerInteractEvent e){
 		if (!plugin.getConfig().getBoolean("shieldcharge.enable")) return;
 		
@@ -76,7 +77,8 @@ public class ShieldChargeListener implements Listener{
 				List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
 				for(Entity e: damaged){
 					if(e instanceof LivingEntity){
-						((Damageable) e).damage(damageamount);
+						CustomDeathMessage.bashed = true;
+						((Damageable) e).damage(damageamount, p);
 						e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
 						p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 1, 1);
 					}
