@@ -69,7 +69,7 @@ public class ShieldChargeListener implements Listener{
 	public void shieldCharge(final Player p){
 		List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
 		for(Entity e: damaged){
-			if (limitTime.contains(p.getName())) return;
+			if (delaytime.contains(p.getName())) return;
 			if(e instanceof LivingEntity){
 				CustomDeathMessage.bashed = true;
 				((Damageable) e).damage(damage, p);
