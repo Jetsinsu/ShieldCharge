@@ -3,7 +3,6 @@ package me.jetsinsu.shieldcharge;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -28,23 +27,19 @@ public class ShieldChargeListener implements Listener{
 	
 	@EventHandler
 	public void onUseShield(PlayerInteractEvent e){
+		if (!plugin.getConfig().getBoolean("shieldcharge.enable")) return;
+		
 		Player p = e.getPlayer();
+		if(!p.hasPermission("sc.usage")) return;
+
 		int speed = plugin.getConfig().getInt("shieldcharge.speed");
 		int delay = plugin.getConfig().getInt("shieldcharge.delay");
-		if(plugin.getConfig().getBoolean("shieldcharge.enable") == false){
-			return;
-		}
 		
-		if(!(p.hasPermission("sc.usage"))){
-			return ;
-		}
-		
-		if(plugin.getConfig().getBoolean("shieldcharge.enable") == true){
+		if(plugin.getConfig().getBoolean("shieldcharge.enable")){
 			if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
-				if(p.getInventory().getItemInOffHand() != null && p.getInventory().getItemInOffHand().getType() == Material.SHIELD){
-					if(delaytime.contains(p.getName())){
-						return;
-					}
+				if (e.getItem() == null) return;
+				if (e.getItem().getType().equals(Material.SHIELD)){
+					if(delaytime.contains(p.getName())) return;
 					
 					list.add(p.getName());
 					p.setWalkSpeed((float) speed/5);
@@ -56,31 +51,25 @@ public class ShieldChargeListener implements Listener{
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void shieldTimeLimit(Player p){
+	public void shieldTimeLimit(final Player p){
 		int timelimit = plugin.getConfig().getInt("shieldcharge.timelimit");
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new BukkitRunnable(){
-			
+		new BukkitRunnable(){
 			@Override
-			public void run() {
+			public void run(){
 				list.remove(p.getName());
 				p.setWalkSpeed((float) 0.2);
 				delaytime.add(p.getName());
 				delayCoolDown(p);
 			}
-		}, timelimit * 20);
+		}.runTaskLater(plugin, timelimit * 20);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void shieldCharge(Player p){
-		int radius = plugin.getConfig().getInt("shieldcharge.radius");
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new BukkitRunnable(){
-
+	public void shieldCharge(final Player p){
+		final int radius = plugin.getConfig().getInt("shieldcharge.radius");
+		new BukkitRunnable(){
 			@Override
 			public void run() {
-				if(!(list.contains(p.getName()))){
-					return;
-				}
+				if(!list.contains(p.getName())) return;
 				
 				List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
 				for(Entity e: damaged){
@@ -90,19 +79,17 @@ public class ShieldChargeListener implements Listener{
 					}
 				}
 			}
-		}, 0L, 20L);
+		}.runTaskTimer(plugin, 0L, 20L);
 	}
 	
-	@SuppressWarnings("deprecation")
-	private void delayCoolDown(Player p) {
+	private void delayCoolDown(final Player p) {
 		int delay = plugin.getConfig().getInt("shieldcharge.delay");
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new BukkitRunnable(){
-
+		new BukkitRunnable(){
 			@Override
 			public void run() {
 				delaytime.remove(p.getName());
 				p.sendMessage(plugin.sc + "Cooldown ended");
 			}
-		}, delay * 20);
+		}.runTaskLater(plugin, delay * 20);
 	}
 }

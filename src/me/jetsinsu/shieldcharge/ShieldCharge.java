@@ -37,7 +37,7 @@ public class ShieldCharge extends JavaPlugin{
 				return true;
 			}
 			
-			if(args.length == 1){
+			else if (args.length >= 1){
 				if(args[0].equalsIgnoreCase("reload")){
 					if(!(p.hasPermission("sc.reload"))){
 						p.sendMessage(sc2 + "You do not have permissions to use this command!");
@@ -48,10 +48,8 @@ public class ShieldCharge extends JavaPlugin{
 					p.sendMessage(sc + "ShieldCharge has been reloaded!");
 					return true;
 				}
-			}
-			
-			if(args.length == 1){
-				if(args[0].equalsIgnoreCase("save")){
+				
+				else if(args[0].equalsIgnoreCase("save")){
 					if(!(p.hasPermission("sc.save"))){
 						p.sendMessage(sc2 + "You do not have permissions to use this command!");
 						return true;
