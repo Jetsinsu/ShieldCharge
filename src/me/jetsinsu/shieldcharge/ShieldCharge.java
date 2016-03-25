@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ShieldCharge extends JavaPlugin{
@@ -25,39 +24,33 @@ public class ShieldCharge extends JavaPlugin{
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		if(!(sender instanceof Player)){
-			sender.sendMessage(sc + "Command only for players! :D");
-			return true;
-		}
-		
-		Player p = (Player) sender;
 		if(cmd.getName().equalsIgnoreCase("shieldcharge")){
 			if(args.length == 0){
-				p.sendMessage(sc + "/shieldcharge reload");
-				p.sendMessage(sc + "/shieldcharge save");
+				sender.sendMessage(sc + "/shieldcharge reload");
+				sender.sendMessage(sc + "/shieldcharge save");
 				return true;
 			}
 			
 			else if (args.length >= 1){
 				if(args[0].equalsIgnoreCase("reload")){
-					if(!(p.hasPermission("sc.reload"))){
-						p.sendMessage(sc2 + "You do not have permissions to use this command!");
+					if(!(sender.hasPermission("sc.reload"))){
+						sender.sendMessage(sc2 + "You do not have permissions to use this command!");
 						return true;
 					}
 					
 					reloadConfig();
-					p.sendMessage(sc + "ShieldCharge has been reloaded!");
+					sender.sendMessage(sc + "ShieldCharge has been reloaded!");
 					return true;
 				}
 				
 				else if(args[0].equalsIgnoreCase("save")){
-					if(!(p.hasPermission("sc.save"))){
-						p.sendMessage(sc2 + "You do not have permissions to use this command!");
+					if(!(sender.hasPermission("sc.save"))){
+						sender.sendMessage(sc2 + "You do not have permissions to use this command!");
 						return true;
 					}
 					
 					saveConfig();
-					p.sendMessage(sc + "ShieldCharge has been saved!");
+					sender.sendMessage(sc + "ShieldCharge has been saved!");
 					return true;
 				}
 			}
