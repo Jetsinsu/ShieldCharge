@@ -53,6 +53,27 @@ public class ShieldCharge extends JavaPlugin{
 					sender.sendMessage(sc + "ShieldCharge has been saved!");
 					return true;
 				}
+				
+				else if(args[0].equalsIgnoreCase("enable")){
+					if(getConfig().getBoolean("shieldcharge.enable") == true){
+						sender.sendMessage(sc2 + "The plugin is already enabled!");
+						return;
+					}
+					else getConfig().setBoolean("shieldcharge.enable", true);
+					sender.sendMessage(sc + "Plugin is now enabled!");
+					return;
+				}
+				
+				else if(args[0].equalsIgnoreCase("disable")){
+					if(getConfig().getBoolean("shieldcharge.enable") == false){
+						sender.sendMessage(sc2 + "The plugin is already disabled!");
+						return;
+					}
+					
+					else getConfig().setBoolean("shieldcharge", false);
+					sender.sendMessage(sc + "Plugin is now disabled!");
+					return;
+				}
 			}
 		}
 		return true;
