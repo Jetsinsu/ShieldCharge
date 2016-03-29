@@ -19,3 +19,4 @@ public class ShieldCharge extends JavaPlugin{
 		saveConfig();
 	}
 }
+

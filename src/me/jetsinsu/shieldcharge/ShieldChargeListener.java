@@ -61,7 +61,7 @@ public class ShieldChargeListener implements Listener{
 		}
 	}
 	
-	public void shieldTimeLimit(final Player p){
+	private void shieldTimeLimit(final Player p){
 		p.setWalkSpeed((float) speed/5);
 		limitTime.add(p.getName());
 		new BukkitRunnable(){
@@ -74,7 +74,7 @@ public class ShieldChargeListener implements Listener{
 		}.runTaskLater(plugin, ((long) limit * 20));
 	}
 	
-	public void shieldCharge(final Player p, final ItemStack shield){
+	private void shieldCharge(final Player p, final ItemStack shield){
 		List<Entity> damaged = p.getNearbyEntities(radius, radius, radius);
 		for(Entity e: damaged){
 			if (delaytime.contains(p.getName())) return;
@@ -87,6 +87,9 @@ public class ShieldChargeListener implements Listener{
 				((Damageable) e).damage(damage, p);
 				e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
 				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 1, 1);
+				
+				if (plugin.getConfig().getBoolean("shieldcharge.shieldtakesdamage"))
+					shield.setDurability(shield.getDurability() <= 336 ? (short) (shield.getDurability() + 1) : shield.getDurability());
 			}
 		}
 	}
