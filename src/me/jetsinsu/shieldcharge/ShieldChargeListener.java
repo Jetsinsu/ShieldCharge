@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
@@ -26,6 +27,9 @@ public class ShieldChargeListener implements Listener{
 	
 	ArrayList<String> limitTime = new ArrayList<String>();
 	ArrayList<String> delaytime = new ArrayList<String>();
+	
+	String sc = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.GREEN + " ");
+	String sc2 = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.RED + " ");
 
 	private ShieldCharge plugin;
 	public ShieldChargeListener(ShieldCharge plugin){
@@ -89,12 +93,12 @@ public class ShieldChargeListener implements Listener{
 	
 	private void delayCoolDown(final Player p) {
 		delaytime.add(p.getName());
-		p.sendMessage(plugin.sc + "Cooldown for " + delay + " seconds");
+		p.sendMessage(sc + "Cooldown for " + delay + " seconds");
 		new BukkitRunnable(){
 			@Override
 			public void run() {
 				delaytime.remove(p.getName());
-				p.sendMessage(plugin.sc + "Cooldown ended");
+				p.sendMessage(sc + "Cooldown ended");
 			}
 		}.runTaskLater(plugin, ((long) delay * 20));
 	}
