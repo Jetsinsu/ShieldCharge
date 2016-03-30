@@ -3,7 +3,7 @@ package me.jetsinsu.shieldcharge;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import CommandManager.Commands;
+import me.jetsinsu.shieldcharge.commands.Commands;
 
 public class ShieldCharge extends JavaPlugin{
 	
