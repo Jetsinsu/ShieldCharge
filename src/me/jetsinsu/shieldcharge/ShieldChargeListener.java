@@ -80,12 +80,14 @@ public class ShieldChargeListener implements Listener{
 		for(Entity e: damaged){
 			if (delaytime.contains(p.getName())) return;
 			if(e instanceof LivingEntity){
-				if(e instanceof ArmorStand) return;
-				ShieldChargeEvent event = new ShieldChargeEvent(p, shield, ((LivingEntity) e));
+				if(e instanceof ArmorStand) continue;
+				LivingEntity entity = (LivingEntity) e;
+				
+				ShieldChargeEvent event = new ShieldChargeEvent(p, shield, entity);
 				Bukkit.getPluginManager().callEvent(event);
 				if (event.isCancelled()) continue;
 				
-				CustomDeathMessage.bashed = true;
+				if ((entity.getHealth() - damage) <= 0) CustomDeathMessage.bashed = true;
 				((Damageable) e).damage(damage, p);
 				e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
 				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 1, 1);
