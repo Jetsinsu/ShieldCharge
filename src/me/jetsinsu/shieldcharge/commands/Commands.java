@@ -1,4 +1,4 @@
-package CommandManager;
+package me.jetsinsu.shieldcharge.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
