@@ -26,10 +26,11 @@ public class Commands implements CommandExecutor{
 				sender.sendMessage(sc + "/shieldcharge disable");
 				sender.sendMessage(sc + "/shieldcharge reload");
 				sender.sendMessage(sc + "/shieldcharge save");
+				sender.sendMessage(sc + "/shieldcharge set <speed,timelimit,radius,delay,damage>");
 				return true;
 			}
 			
-			else if (args.length >= 1){
+			else if (args.length == 1){
 				if(args[0].equalsIgnoreCase("reload")){
 					if(!(sender.hasPermission("sc.reload"))){
 						sender.sendMessage(sc2 + "You do not have permissions to use this command!");
@@ -61,6 +62,8 @@ public class Commands implements CommandExecutor{
 					else
 						plugin.getConfig().set("shieldcharge.enable", true);
 						sender.sendMessage(sc + "Plugin is now enabled!");
+						plugin.saveConfig();
+						plugin.reloadConfig();
 						return true;
 				}
 				
@@ -73,13 +76,9 @@ public class Commands implements CommandExecutor{
 					else
 						plugin.getConfig().set("shieldcharge.enable", false);
 						sender.sendMessage(sc + "Plugin is now disabled!");
+						plugin.saveConfig();
+						plugin.reloadConfig();
 						return true;
-				}
-			}
-			
-			else if(args.length >= 1){
-				if(args[0].equalsIgnoreCase("set")){
-					
 				}
 			}
 		}

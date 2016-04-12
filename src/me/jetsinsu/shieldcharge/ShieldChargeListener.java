@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -79,6 +80,7 @@ public class ShieldChargeListener implements Listener{
 		for(Entity e: damaged){
 			if (delaytime.contains(p.getName())) return;
 			if(e instanceof LivingEntity){
+				if(e instanceof ArmorStand) return;
 				ShieldChargeEvent event = new ShieldChargeEvent(p, shield, ((LivingEntity) e));
 				Bukkit.getPluginManager().callEvent(event);
 				if (event.isCancelled()) continue;
