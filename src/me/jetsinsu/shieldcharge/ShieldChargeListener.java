@@ -54,7 +54,12 @@ public class ShieldChargeListener implements Listener{
 			if (e.getItem() == null) return;
 			if (e.getItem().getType().equals(Material.SHIELD)){
 				if(p.getNearbyEntities(radius, radius, radius).isEmpty()) return;
-				if(delaytime.contains(p.getName()) || !plugin.hasWorldGuardPermission(p)) return;
+				if(delaytime.contains(p.getName())) return;
+				if (!plugin.hasWorldGuardPermission(p)){
+					p.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "] "
+							+ ChatColor.RED + "You cannot use ShieldCharge in a protected region");
+					return;
+				}
 				
 				shieldCharge(p, e.getItem());
 				shieldTimeLimit(p);
