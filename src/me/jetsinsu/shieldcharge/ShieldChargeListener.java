@@ -54,7 +54,7 @@ public class ShieldChargeListener implements Listener{
 			if (e.getItem() == null) return;
 			if (e.getItem().getType().equals(Material.SHIELD)){
 				if(p.getNearbyEntities(radius, radius, radius).isEmpty()) return;
-				if(delaytime.contains(p.getName())) return;
+				if(delaytime.contains(p.getName()) || !plugin.hasWorldGuardPermission(p)) return;
 				
 				shieldCharge(p, e.getItem());
 				shieldTimeLimit(p);
