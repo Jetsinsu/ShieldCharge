@@ -10,23 +10,37 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import me.jetsinsu.shieldcharge.commands.Commands;
+import me.jetsinsu.shieldcharge.events.CustomDeathMessage;
+import me.jetsinsu.shieldcharge.events.ShieldChargeListener;
 
 public class ShieldCharge extends JavaPlugin{
 	
 	private boolean worldGuardEnabled = false;
+	private ShieldChargeListener chargeListener;
 	
 	public void onEnable(){
-		Bukkit.getServer().getPluginManager().registerEvents(new ShieldChargeListener(this), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new CustomDeathMessage(), this);
-		getCommand("shieldcharge").setExecutor(new Commands(this));
 		getConfig().options().copyDefaults(true);
 		saveConfig();
+		
+		this.chargeListener = new ShieldChargeListener(this);
+		Bukkit.getServer().getPluginManager().registerEvents(chargeListener, this);
+		Bukkit.getServer().getPluginManager().registerEvents(new CustomDeathMessage(), this);
+		
+		getCommand("shieldcharge").setExecutor(new Commands(this));
 		
 		worldGuardEnabled = (Bukkit.getPluginManager().getPlugin("WorldGuard") != null);
 	}
 	
 	public void onDisabled(){
 		saveConfig();
+	}
+	
+	public ShieldChargeListener getChargeListener() {
+		return chargeListener;
+	}
+	
+	public boolean isWorldGuardEnabled() {
+		return worldGuardEnabled;
 	}
 	
 	public boolean hasWorldGuardPermission(Player player){

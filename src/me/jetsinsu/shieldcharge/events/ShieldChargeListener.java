@@ -1,4 +1,4 @@
-package me.jetsinsu.shieldcharge;
+package me.jetsinsu.shieldcharge.events;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,22 +20,23 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.jetsinsu.shieldcharge.ShieldCharge;
 import me.jetsinsu.shieldcharge.api.ShieldChargeEvent;
 
 public class ShieldChargeListener implements Listener{
 	
 	private double radius, speed, delay, limit, damage;
 	
-	ArrayList<String> limitTime = new ArrayList<String>();
-	ArrayList<String> delaytime = new ArrayList<String>();
-	
-	String sc = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.GREEN + " ");
-	String sc2 = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.RED + " ");
+	private static final ArrayList<String> limitTime = new ArrayList<String>(), delaytime = new ArrayList<String>();
+	private static final String sc = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.GREEN + " ");
 
 	private ShieldCharge plugin;
 	public ShieldChargeListener(ShieldCharge plugin){
 		this.plugin = plugin;
-		
+		reloadValues();
+	}
+	
+	public void reloadValues(){
 		this.radius = plugin.getConfig().getDouble("shieldcharge.radius");
 		this.speed = plugin.getConfig().getDouble("shieldcharge.speed");
 		this.delay = plugin.getConfig().getDouble("shieldcharge.delay");
@@ -88,17 +89,19 @@ public class ShieldChargeListener implements Listener{
 				if(e instanceof ArmorStand) continue;
 				LivingEntity entity = (LivingEntity) e;
 				
-				ShieldChargeEvent event = new ShieldChargeEvent(p, shield, entity);
+				ShieldChargeEvent event = new ShieldChargeEvent(p, shield, entity, damage);
 				Bukkit.getPluginManager().callEvent(event);
 				if (event.isCancelled()) continue;
 				
-				if ((entity.getHealth() - damage) <= 0) CustomDeathMessage.bashed = true;
-				((Damageable) e).damage(damage, p);
+				double newDamage = event.getDamage();
+				
+				if ((entity.getHealth() - newDamage) <= 0) CustomDeathMessage.bashed = true;
+				((Damageable) e).damage(newDamage, p);
 				e.setVelocity(p.getLocation().getDirection().setY(p.getLocation().getDirection().multiply(0.5).getY() + 0.5));
 				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 1, 1);
 				
 				if (plugin.getConfig().getBoolean("shieldcharge.shieldtakesdamage"))
-					shield.setDurability(shield.getDurability() <= 336 ? (short) (shield.getDurability() + 1) : shield.getDurability());
+					shield.setDurability(shield.getDurability() <= shield.getType().getMaxDurability() ? (short) (shield.getDurability() + 1) : shield.getDurability());
 			}
 		}
 	}

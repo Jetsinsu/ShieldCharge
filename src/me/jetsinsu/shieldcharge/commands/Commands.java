@@ -9,14 +9,13 @@ import me.jetsinsu.shieldcharge.ShieldCharge;
 
 public class Commands implements CommandExecutor{
 
-	private ShieldCharge plugin;
+	private static final String sc = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.GREEN + " ");
+	private static final String sc2 = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.RED + " ");
 	
+	private ShieldCharge plugin;
 	public Commands(ShieldCharge plugin){
 		this.plugin = plugin;
 	}
-	
-	String sc = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.GREEN + " ");
-	String sc2 = (ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "ShieldCharge" + ChatColor.DARK_GRAY + "]" + ChatColor.RED + " ");
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -38,6 +37,7 @@ public class Commands implements CommandExecutor{
 					}
 					
 					plugin.reloadConfig();
+					plugin.getChargeListener().reloadValues();
 					sender.sendMessage(sc + "ShieldCharge has been reloaded!");
 					return true;
 				}
@@ -59,12 +59,11 @@ public class Commands implements CommandExecutor{
 						return true;
 					}
 					
-					else
-						plugin.getConfig().set("shieldcharge.enable", true);
-						sender.sendMessage(sc + "Plugin is now enabled!");
-						plugin.saveConfig();
-						plugin.reloadConfig();
-						return true;
+					plugin.getConfig().set("shieldcharge.enable", true);
+					sender.sendMessage(sc + "Plugin is now enabled!");
+					plugin.saveConfig();
+					plugin.reloadConfig();
+					return true;
 				}
 				
 				else if(args[0].equalsIgnoreCase("disable")){
@@ -73,12 +72,11 @@ public class Commands implements CommandExecutor{
 						return true;
 					}
 					
-					else
-						plugin.getConfig().set("shieldcharge.enable", false);
-						sender.sendMessage(sc + "Plugin is now disabled!");
-						plugin.saveConfig();
-						plugin.reloadConfig();
-						return true;
+					plugin.getConfig().set("shieldcharge.enable", false);
+					sender.sendMessage(sc + "Plugin is now disabled!");
+					plugin.saveConfig();
+					plugin.reloadConfig();
+					return true;
 				}
 			}
 		}
