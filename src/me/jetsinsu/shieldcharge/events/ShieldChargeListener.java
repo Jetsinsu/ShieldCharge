@@ -77,6 +77,8 @@ public class ShieldChargeListener implements Listener{
 				limitTime.remove(p.getName());
 				p.setWalkSpeed((float) 0.2);
 				if (delay > 0) delayCoolDown(p);
+				
+				this.cancel();
 			}
 		}.runTaskLater(plugin, ((long) limit * 20));
 	}
@@ -114,6 +116,8 @@ public class ShieldChargeListener implements Listener{
 			public void run() {
 				delaytime.remove(p.getName());
 				p.sendMessage(sc + "Cooldown ended");
+				
+				this.cancel();
 			}
 		}.runTaskLater(plugin, ((long) delay * 20));
 	}
